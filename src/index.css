@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* Основные стили body */
+
+body {
+	background-color: #ffffff;
+	/* светлая тема по умолчанию */
+	color: #1f2937;
+	/* text-gray-900 */
+	font-family: 'Inter', sans-serif;
+	margin: 0;
+	padding: 0;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Тёмная тема */
+.dark body {
+	background-color: #111827;
+	/* bg-gray-900 */
+	color: #f9fafb;
+	/* text-white */
+}
+
+/* Убираем стандартные стили focus для элементов формы */
+input,
+button,
+select,
+textarea {
+	outline: none;
+	background: transparent;
+	font-family: inherit;
+}
+
+/* Дополнительно: стиль фокуса можно заменить кастомным */
+input:focus,
+button:focus,
+select:focus,
+textarea:focus {
+	/* Например, тонкая рамка или тень вместо outline */
+	box-shadow: none;
+}
+
+/* Стили для iOS Safari — убираем синий хайлайт при нажатии */
+* {
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Опционально: глобальные reset-стили */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
