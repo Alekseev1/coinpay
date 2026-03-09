@@ -3,7 +3,7 @@ import { useThemeStore } from '../store/themeStore';
 import BottomNav from '../components/BottomNav';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
-import { useAppStore } from '../store/appStore';
+import { useAppStore, type Transaction } from '../store/appStore';
 import SpendMoneyModal from '../components/SpendMoneyModal';
 import { toast } from 'react-toastify';
 // MUI
@@ -28,21 +28,26 @@ import { Select, MenuItem, FormControl, InputLabel, Box, Card, CardContent, Typo
 
 const SpendingPage: React.FC = () => {
   const { isDarkMode } = useThemeStore();
-  const { user, transactions, fetchTransactionsByMonth } = useAppStore();
-  const [selectedMonth, setSelectedMonth] = useState('January');
+  const { user, fetchTransactionsByMonth } = useAppStore();
+  const [selectedMonth, setSelectedMonth] = useState<string>('January');
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [isSpendModalOpen, setIsSpendModalOpen] = useState(false);
 
-	const spendTransactions = transactions.filter(tx => tx.type === 'Spending');
+ const spendTransactions = filteredTransactions.filter(tx => tx.type === 'Spending');
 
-	useEffect(() => {
-		fetchTransactionsByMonth(selectedMonth);
-	}, [selectedMonth]);
+ useEffect(() => {
+  // Загружаем транзакции за январь при монтировании
+  fetchTransactionsByMonth(selectedMonth).then((data) => {
+  	setFilteredTransactions(data);
+  });
+ }, []);
 
-const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value);
+
+
+const handleMonthChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedMonth(e.target.value as string);
 	 
   }
-
 
 
   return (

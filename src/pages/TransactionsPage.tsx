@@ -1,14 +1,19 @@
 // src/pages/TransactionsPage.tsx
-import { FaChevronLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { useThemeStore } from '../store/themeStore';
 import { useAppStore } from '../store/appStore';
 
+import { useEffect } from 'react';
+
 const TransactionsPage = () => {
   const { isDarkMode } = useThemeStore();
-  const { transactions } = useAppStore();
+  const { transactions, fetchTransactions } = useAppStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [ fetchTransactions ]);
 
   return (
     <div className={`min-h-screen pb-16 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>

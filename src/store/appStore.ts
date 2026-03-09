@@ -33,7 +33,7 @@ interface AppStore {
   addTransaction: (tx: Transaction) => void;
   fetchTransactions: () => Promise<void>;
   spend: (amount: number) => Promise<void>;
-  fetchTransactionsByMonth: (month: string) => Promise<void>;
+  fetchTransactionsByMonth: (month: string) => Promise<Transaction[]>;
   updateUser: (updatedUser: Partial<User>) => void;
 }
 
@@ -103,8 +103,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
         createdAt: new Date().toISOString(),
       };
       get().addTransaction(newTx);
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Deposit failed";
+      toast.error(errorMessage);
       throw err;
     }
   },
@@ -141,8 +142,9 @@ export const useAppStore = create<AppStore>((set, get) => ({
         createdAt: new Date().toISOString(),
       };
       get().addTransaction(newTx);
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Spend failed";
+      toast.error(errorMessage);
       throw err;
     }
   },
@@ -179,7 +181,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
   fetchTransactionsByMonth: async (month) => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) return [];
 
     try {
       const res = await fetch(`/api/transactions?month=${month}`, {
@@ -195,11 +197,13 @@ export const useAppStore = create<AppStore>((set, get) => ({
           ...tx,
           amount: parseFloat(tx.amount),
         }));
-        set({ transactions: tsx });
+        return tsx;
       }
+      return [];
     } catch (err) {
       console.error("Failed to fetch transactions:", err);
       toast.error("Failed to load data for selected month");
+      return [];
     }
   },
   updateUser: (updatedUser) =>
